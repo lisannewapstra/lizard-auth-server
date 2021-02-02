@@ -1,16 +1,10 @@
 """Mostly copied from django-warrant's tests.py."""
 
-from botocore.exceptions import ClientError
 from django.conf import settings
-from django.contrib.auth import authenticate as django_authenticate
-from django.contrib.auth import get_user_model
-from django.http import HttpRequest
 from django.test import override_settings
 from django.test import TestCase
-from importlib import import_module
-from mock import patch
-from warrant import Cognito
 from lizard_auth_server import backends
+from unittest import mock
 
 
 def get_user(cls, *args, **kwargs):
@@ -48,15 +42,15 @@ def get_user(cls, *args, **kwargs):
         metadata=user_metadata,
     )
 
+
 @override_settings(
     AUTHENTICATION_BACKENDS=[
         "lizard_auth_server.backends.CognitoBackend",
         "django.contrib.auth.backends.ModelBackend",
     ],
 )
+@mock.patch("lizard_auth_server.backends.CognitoUser.__init__")
 class TestCognitoUser(TestCase):
-
-    @patch("lizard_auth_server.backends.CognitoUser.__init__")
     def test_smoke(self, patched_init):
         """Quick test
 
@@ -88,9 +82,51 @@ class TestCognitoUser(TestCase):
         }
         attribute_list = example_user["UserAttributes"]
         cognito_user = backends.CognitoUser()
-        django_user1 = cognito_user.get_user_obj(username="test", attribute_list=attribute_list)
+        django_user1 = cognito_user.get_user_obj(
+            username="test", attribute_list=attribute_list
+        )
         self.assertEqual(django_user1.email, "test@email.com")
         self.assertTrue(django_user1.user_profile.migrated_at)
         # Doing it a second time reuses the exisiting user.
-        django_user2 = cognito_user.get_user_obj(username="test", attribute_list=attribute_list)
+        django_user2 = cognito_user.get_user_obj(
+            username="test", attribute_list=attribute_list
+        )
         self.assertEqual(django_user2.id, django_user1.id)
+
+    def test_admin_set_password(self, patched_init):
+        patched_init.return_value = None
+        cognito_user = backends.CognitoUser()
+
+        cognito_user.client = mock.Mock()  # the boto3 client
+        cognito_user.username = "testuser"
+        cognito_user.user_pool_id = "foo"
+
+        cognito_user.admin_set_user_password("bar")
+
+        # AdminSetUserPassword should be called as documented
+        args, kwargs = cognito_user.client.admin_set_user_password.call_args
+        expected = {
+            "UserPoolId": "foo",
+            "Username": "testuser",
+            "Password": "bar",
+            "Permanent": True,
+        }
+        self.assertDictEqual(expected, kwargs)
+
+    def test_admin_user_exists(self, patched_init):
+        patched_init.return_value = None
+        cognito_user = backends.CognitoUser()
+
+        cognito_user.client = mock.Mock()  # the boto3 client
+        cognito_user.username = "testuser"
+        cognito_user.user_pool_id = "foo"
+
+        cognito_user.admin_user_exists()
+
+        # AdminGetUser should be called as documented
+        args, kwargs = cognito_user.client.admin_get_user.call_args
+        expected = {
+            "UserPoolId": "foo",
+            "Username": "testuser",
+        }
+        self.assertDictEqual(expected, kwargs)

@@ -147,45 +147,12 @@ class AccessToPortalView(TemplateView):
         return self.profile.all_organisation_roles(self.portal)
 
 
-class EditProfileView(FormView):
+class EditProfileView(TemplateView):
     """
-    Straightforward view which displays a form to have a user
-    edit his / her own profile.
+    Display a message that this view is now unavailable.
     """
 
     template_name = "lizard_auth_server/edit_profile.html"
-    form_class = forms.EditProfileForm
-    _profile = None
-
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(EditProfileView, self).dispatch(request, *args, **kwargs)
-
-    @property
-    def profile(self):
-        if not self._profile:
-            self._profile = self.request.user.user_profile
-        return self._profile
-
-    def get_initial(self):
-        return {
-            "email": self.profile.email,
-            "first_name": self.profile.first_name,
-            "last_name": self.profile.last_name,
-        }
-
-    def get_form(self, form_class=None):
-        if form_class is None:
-            form_class = self.get_form_class()
-        return form_class(user=self.request.user, **self.get_form_kwargs())
-
-    def form_valid(self, form):
-        data = form.cleaned_data
-
-        # let the model handle the rest
-        self.profile.update_all(data)
-
-        return HttpResponseRedirect(reverse("profile"))
 
 
 class InviteUserView(StaffOnlyMixin, FormView):
