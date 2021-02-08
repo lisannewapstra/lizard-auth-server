@@ -2,7 +2,7 @@ Changelog of lizard-auth-server
 ===================================================
 
 
-2.28 (unreleased)
+2.28 (2021-02-08)
 -----------------
 
 - Disabled the edit_profile view.
