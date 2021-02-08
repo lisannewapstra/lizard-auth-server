@@ -216,7 +216,7 @@ class AuthorizeView(FormInvalidMixin, ProcessGetFormView):
         """
         Show a user-friendly access denied page.
         """
-        context = RequestContext(self.request, {"login_url": self.build_login_url()})
+        context = {"login_url": self.build_login_url()}
         return TemplateResponse(
             self.request, "lizard_auth_server/access_denied.html", context, status=403
         )
