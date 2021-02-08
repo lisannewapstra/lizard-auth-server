@@ -2,8 +2,8 @@ Changelog of lizard-auth-server
 ===================================================
 
 
-2.29 (unreleased)
------------------
+3.0 (2021-02-08)
+----------------
 
 - Add search by username in UserProfile admin. Remove unused filters.
 
