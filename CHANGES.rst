@@ -7,6 +7,8 @@ Changelog of lizard-auth-server
 
 - Add search by username in UserProfile admin. Remove unused filters.
 
+- Use dict instead of requestcontext (deprecated in django 1.11).
+
 
 2.28 (2021-02-08)
 -----------------
