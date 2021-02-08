@@ -77,8 +77,8 @@ class UserProfileAdmin(admin.ModelAdmin):
     model = models.UserProfile
     form = forms.UserProfileForm
     list_display = ["username", "full_name", "email", "created_at", "migrated_at"]
-    search_fields = ["user__first_name", "user__last_name", "user__email"]
-    list_filter = ["portals", "organisations", "migrated_at"]
+    search_fields = ["user__username", "user__first_name", "user__last_name", "user__email"]
+    list_filter = ["migrated_at", "created_at", "updated_at"]
     readonly_fields = ["updated_at", "created_at"]
     list_select_related = ["user"]
     actions = ["reset_migration_status"]
