@@ -10,7 +10,6 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
-from django.template.context import RequestContext
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.urls import reverse_lazy
@@ -59,7 +58,7 @@ class ErrorMessageResponse(TemplateResponse):
     def __init__(self, request, error_message=None, status=500):
         if not error_message:
             error_message = _("An unknown error occurred.")
-        context = RequestContext(request, {"error_message": error_message})
+        context = {"error_message": error_message}
         super(ErrorMessageResponse, self).__init__(
             request, "lizard_auth_server/error_message.html", context, status=status
         )
