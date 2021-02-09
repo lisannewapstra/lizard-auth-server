@@ -5,7 +5,7 @@ Changelog of lizard-auth-server
 3.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Again, use dict instead of requestcontext (deprecated in django 1.11).
 
 
 3.0 (2021-02-08)
