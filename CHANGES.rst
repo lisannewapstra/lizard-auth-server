@@ -1,11 +1,15 @@
 Changelog of lizard-auth-server
 ===================================================
 
+3.3 (unreleased)
+----------------
+
+- Nothing changed yet.
 
 3.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Updated invite mail. Now only sent to 3Di users. And removed redirect to deprecated.3di
 
 
 3.1 (2021-02-09)
