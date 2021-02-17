@@ -1,11 +1,6 @@
 Changelog of lizard-auth-server
 ===================================================
 
-3.3 (unreleased)
-----------------
-
-- Nothing changed yet.
-
 3.2 (unreleased)
 ----------------
 
